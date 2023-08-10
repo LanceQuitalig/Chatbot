@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Chatterbot Test </title>
+    <link rel="stylesheet" href={{ url_for('static', filename= 'style.css') }}>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1> test 2 Chatterbot </h1>
+    <div>
+        <div id="chatbox">
+            <p class="botText"> <span> How can I help you? </span></p>
+        </div>
+        <div id="userInput">
+            <input id="textInput" type="text" name="msg" placeholder="Type here">
+            <input id="buttonInput" type="submit">
+        </div>
+        <script>
+            function getBotResponse() {
+                var rawText = document.getElementById("textInput").value;
+                var userHTML = '<p class="userText"><span>' + rawText + '</span></p>';
+                document.getElementById("textInput").value = "";
+                $("#chatbox").append(userHTML);
+                document.getElementById("userInput").scrollIntoView({block: 'start', behavior: 'smooth'});
+                $.get("/bot", { msg: rawText }).done(function(data) {
+                    var botHTML = '<p class="botText"><span>' + data + '</span></p>';
+                    $("#chatbox").append(botHTML);
+                    document.getElementById("userInput").scrollIntoView({block: 'start', behavior: 'smooth'});
+                });
+            }
+
+            document.getElementById("textInput").addEventListener("keypress", function(e) {
+                if(e.which == 13) getBotResponse();
+            });
+            document.getElementById("buttonInput").addEventListener("click", function() {
+                console.log('press');
+                getBotResponse();
+            })
+        </script>
+    </div>
+</body>
+</html>
