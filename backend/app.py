@@ -9,8 +9,7 @@ app = Flask(__name__)
 
 app.config.from_object(__name__)
 
-# CORS(app, resources = {r"/*":{'origins':"*"}})
-CORS(app, resources = {r"/*":{'origins':"http://localhost:8080", "allow_headers": "Access-Control-Allow-Origin"}})
+CORS(app, resources = {r"/*":{'origins':"*"}})
 
 english_bot = ChatBot(
     "Chatterbot", 
@@ -37,10 +36,15 @@ trainer.train(
 def home():
     return render_template("index.html")
 
-@app.route("/bot")
+@app.route("/bot", methods = ["GET", "POST"])
 def get_bot_response():
-    userText = request.args.get("msg")
-    return str(english_bot.get_response(userText))
+    if request.method == "POST":
+        vueData = request.get_json()
+        response = english_bot.get_response(vueData["message"])
+        return str(response)
+    else: 
+        userText = request.args.get("msg")
+        return str(english_bot.get_response(userText))
 
 if __name__ == "__main__":
     app.run(debug = True)
